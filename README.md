@@ -5,4 +5,4 @@ GAN implementations on MNIST Dataset in Google Colab
 
 Paper: https://arxiv.org/pdf/1406.2661.pdf
 
-![alt-text](gifs/vanilla_10.gif)
+![alt-text](gifs/vanilla_10_fps.gif)
