@@ -4,7 +4,7 @@ GAN implementations on MNIST Dataset in Google Colab
 ### Generative Adversarial Networks
 
 Paper: https://arxiv.org/pdf/1406.2661.pdf  
-200 epochs:  
+300 epochs:  
 ![](gifs/vanilla_10_fps.gif)
 
 ### DCGAN
