@@ -17,6 +17,7 @@ import torch.nn as nn
 from torch.optim import Adam
 import torchvision
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Generator(nn.Module):
   def __init__(self, latent_size = 100):
@@ -79,11 +80,6 @@ class Discriminator(nn.Module):
   def forward(self, img):
       return self.layers(img.cuda())
 
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-
-
 def plot_epoch(images, n=36):
     '''  
     Visualize a single epoch of images
@@ -108,11 +104,6 @@ def plot_epoch(images, n=36):
 
 import sys
 import os
-import torch
-import torch.nn as nn
-import torchvision
-import matplotlib.pyplot as plt
-import numpy as np
 from torchvision import transforms
 from torch.optim import Adam
 from torchvision.datasets import MNIST
@@ -228,7 +219,9 @@ for epoch in range(EPOCH_SIZE):
                             fake_score.mean().item()))
             plot_epoch(fake_images.cpu())
             array_2_make_grid = ((fake_images.cpu()[0:ROW_NUM**2, :, :, :] + 1) * (1/2) * 255).type(torch.uint8)
-    gif_array.append(torchvision.utils.make_grid(array_2_make_grid, nrow = ROW_NUM).numpy())
-    write_gif(gif_array, filename = 'dcgan_10_fps.gif', fps = 10)
+            gif_array.append(torchvision.utils.make_grid(array_2_make_grid, nrow = ROW_NUM).numpy())
+            write_gif(gif_array, filename = 'dcgan_10_fps.gif', fps = 10)
 
 write_gif(gif_array, filename = 'dcgan_5_fps.gif', fps = 5)
+
+"""# New Section"""
