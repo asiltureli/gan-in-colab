@@ -18,7 +18,11 @@ import torch
 import torch.nn as nn
 from torch.optim import Adam
 import torchvision
+import matplotlib.pyplot as plt
 import numpy as np
+import sys
+import os
+import torchvision
 
 class Generator(nn.Module):
     def __init__(self, latent_size = 100):
@@ -60,11 +64,6 @@ class Discriminator(nn.Module):
 
 """Function to plot results every now and then just for being sure everything is fine"""
 
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-
-
 def plot_epoch(images, n=36):
     '''  
     Visualize a single epoch of images
@@ -88,20 +87,12 @@ def plot_epoch(images, n=36):
         plt.axis("off")
     plt.show()
 
-import sys
-import os
-import torch
-import torch.nn as nn
-import torchvision
-import matplotlib.pyplot as plt
-import numpy as np
-from torchvision import transforms
 from torch.optim import Adam
 from torchvision.datasets import MNIST
 from array2gif import write_gif
 
 LATENT_SIZE = 100
-EPOCH_SIZE  = 200
+EPOCH_SIZE  = 300
 ROW_NUM     = 6
 try:
   data_path = os.path.join(os.path.abspath(os.environ["CONDA_PREFIX"]),
@@ -121,9 +112,9 @@ except RuntimeError or KeyError:
 
 
 dataset = torchvision.datasets.MNIST(root=data_path,download=True)
-dataset.transform = transforms.Compose([transforms.ToTensor(), 
-                                        transforms.Normalize(mean = (0.5,), 
-                                                             std = (0.5,))])
+dataset.transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor(), 
+                                                    torchvision.transforms.Normalize(mean = (0.5,), 
+                                                                                     std = (0.5,))])
 
 
 # Data Loader
@@ -140,17 +131,14 @@ criterion = nn.BCELoss()
 discriminator = Discriminator().to(device)
 generator     = Generator().to(device)
 
-optim_d = Adam(discriminator.parameters(), lr = 0.0005)
-optim_g = Adam(generator.parameters(),     lr = 0.0005)
+optim_d = Adam(discriminator.parameters(), lr = 0.0002)
+optim_g = Adam(generator.parameters(),     lr = 0.0002)
 
 gif_array = []*EPOCH_SIZE
 total_step = len(data_loader)
 for epoch in range(EPOCH_SIZE):
     for step, (imgs, _) in enumerate(data_loader):
-        training_out_dict = vanilla.train(imgs)
 
-        # Extract batch size
-        batch_size = imgs.shape[0]
         # Create Fake and Real Labels
         real_labels = torch.ones(batch_size, 1).to(device)
         fake_labels = torch.zeros(batch_size, 1).to(device)
@@ -202,7 +190,8 @@ for epoch in range(EPOCH_SIZE):
                             g_loss.item(), 
                             real_score.mean().item(), 
                             fake_score.mean().item()))
-            plot_epoch(fake_images.cpu())
+    # plot_epoch(fake_images.cpu())
     array_2_make_grid = ((fake_images.cpu()[0:ROW_NUM**2, :, :, :] + 1) * (1/2) * 255).type(torch.uint8)
     gif_array.append(torchvision.utils.make_grid(array_2_make_grid, nrow = ROW_NUM).numpy())
 write_gif(gif_array, filename = 'vanilla_10_fps.gif', fps = 10)
+
